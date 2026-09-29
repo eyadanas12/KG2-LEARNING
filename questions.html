@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Dashboard | KG2 Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #f8fafc;
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-bar {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .back-btn {
+            background-color: #ef4444;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #2563eb;
+            font-weight: 800;
+        }
+
+        .total-score-box {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        @media (min-width: 850px) {
+            .quiz-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .subject-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 15px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+            border: 2px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .subject-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            width: 100%;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .math-title { color: #16a34a; }
+        .english-title { color: #d97706; }
+        .arabic-title { color: #db2777; }
+
+        .progress-text {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .audio-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1e293b;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .option-btn {
+            padding: 10px 5px;
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .option-btn.wrong {
+            background-color: #ef4444 !important;
+            color: white !important;
+            border-color: #dc2626 !important;
+        }
+
+        .completed-box {
+            color: #16a34a;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <a href="index.html" class="back-btn">رجوع ↩</a>
+        <h1>🎯 اختبار المواد الثلاث</h1>
+    </div>
+
+    <div id="totalScore" class="total-score-box">مجموع النقاط: 0 / 60</div>
+
+    <div class="quiz-grid">
+        <!-- عمود عربي -->
+        <div class="subject-card">
+            <div class="subject-title arabic-title">🔴 اللغة العربية</div>
+            <div id="ar-progress" class="progress-text">سؤال 1 من 20</div>
+            <button class="audio-btn" onclick="playAudio('ar')">🔊 استمع للسؤال</button>
+            <div id="ar-question" class="question-text">جاري التحميل...</div>
+            <div id="ar-options" class="options-grid"></div>
+        </div>
+
+        <!-- عمود English -->
+        <div class="subject-card">
+            <div class="subject-title english-title">🟡 English</div>
+            <div id="en-progress" class="progress-text">Question 1 of 20</div>
+            <button class="audio-btn" onclick="playAudio('en')">🔊 Listen</button>
+            <div id="en-question" class="question-text">Loading...</div>
+            <div id="en-options" class="options-grid"></div>
+        </div>
+
+        <!-- عمود Math -->
+        <div class="subject-card">
+            <div class="subject-title math-title">🟢 Math</div>
+            <div id="math-progress" class="progress-text">Question 1 of 20</div>
+            <button class="audio-btn" onclick="playAudio('math')">🔊 Listen</button>
+            <div id="math-question" class="question-text">Loading...</div>
+            <div id="math-options" class="options-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        function generateMathBank() {
+            const list = [];
+            for (let i = 0; i < 500; i++) {
+                let a = Math.floor(Math.random() * 10) + 1;
+                let b = Math.floor(Math.random() * 10) + 1;
+                let isPlus = Math.random() > 0.5;
+
+                if (isPlus) {
+                    let ans = a + b;
+                    list.push({
+                        q: `What is ${a} plus ${b}?`,
+                        ans: ans.toString(),
+                        opts: [ans.toString(), (ans + 1).toString(), (ans - 1 < 0 ? ans + 2 : ans - 1).toString(), (ans + 3).toString()]
+                    });
+                } else {
+                    if (a < b) { let temp = a; a = b; b = temp; }
+                    let ans = a - b;
+                    list.push({
+                        q: `What is ${a} minus ${b}?`,
+                        ans: ans.toString(),
+                        opts: [ans.toString(), (ans + 1).toString(), (ans + 2).toString(), (ans + 3).toString()]
+                    });
+                }
+            }
+            return list;
+        }
+
+        function generateEnglishBank() {
+            const list = [];
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const words = ["box", "cat", "dog", "apple", "ball", "fish", "hat", "sun", "tree", "duck", "lion", "pen", "car", "star", "moon"];
+            
+            for (let i = 0; i < 500; i++) {
+                let word = words[i % words.length];
+                let correct = word.charAt(0).toUpperCase();
+                let wrong1 = letters[Math.floor(Math.random() * 26)];
+                let wrong2 = letters[Math.floor(Math.random() * 26)];
+                let wrong3 = letters[Math.floor(Math.random() * 26)];
+                
+                list.push({
+                    q: `ما هو الحرف الأول من كلمة ${word}؟`,
+                    ans: correct,
+                    opts: [correct, wrong1, wrong2, wrong3]
+                });
+            }
+            return list;
+        }
+
+        function generateArabicBank() {
+            const list = [];
+            const arLetters = ["أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
+            const words = [
+                {w: "أسد", l: "أ"}, {w: "بطة", l: "ب"}, {w: "تفاحة", l: "ت"}, {w: "جمل", l: "ج"},
+                {w: "حصان", l: "ح"}, {w: "دب", l: "د"}, {w: "سمكة", l: "س"}, {w: "شمس", l: "ش"},
+                {w: "صقر", l: "ص"}, {w: "فيل", l: "ف"}, {w: "قمر", l: "ق"}, {w: "كرة", l: "ك"}
+            ];
+
+            for (let i = 0; i < 500; i++) {
+                let item = words[i % words.length];
+                let wrong1 = arLetters[Math.floor(Math.random() * arLetters.length)];
+                let wrong2 = arLetters[Math.floor(Math.random() * arLetters.length)];
+                let wrong3 = arLetters[Math.floor(Math.random() * arLetters.length)];
+
+                list.push({
+                    q: `ما هو الحرف الأول من كلمة (${item.w})؟`,
+                    ans: item.l,
+                    opts: [item.l, wrong1, wrong2, wrong3]
+                });
+            }
+            return list;
+        }
+
+        function shuffle(arr) {
+            return arr.sort(() => Math.random() - 0.5);
+        }
+
+        const mathQuestions = shuffle(generateMathBank()).slice(0, 20);
+        const englishQuestions = shuffle(generateEnglishBank()).slice(0, 20);
+        const arabicQuestions = shuffle(generateArabicBank()).slice(0, 20);
+
+        let mathIdx = 0, enIdx = 0, arIdx = 0;
+        let totalScore = 0;
+
+        function updateScoreDisplay() {
+            document.getElementById('totalScore').innerText = `مجموع النقاط: ${totalScore} / 60`;
+        }
+
+        function speakPraise() {
+            window.speechSynthesis.cancel();
+            const praises = ["Bravo!", "Excellent!", "Great job!"];
+            const text = praises[Math.floor(Math.random() * praises.length)];
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function handleAnswer(btn, isCorrect, nextCallback) {
+            if (isCorrect) {
+                totalScore++;
+                updateScoreDisplay();
+                speakPraise();
+                nextCallback();
+            } else {
+                btn.classList.add('wrong');
+                setTimeout(() => {
+                    nextCallback();
+                }, 400);
+            }
+        }
+
+        function loadArabic() {
+            if (arIdx >= 20) {
+                document.getElementById('ar-question').parentNode.innerHTML = `<div class="completed-box">✅ أتممت أسئلة العربي!</div>`;
+                return;
+            }
+            const q = arabicQuestions[arIdx];
+            document.getElementById('ar-progress').innerText = `سؤال ${arIdx + 1} من 20`;
+            document.getElementById('ar-question').innerText = q.q;
+            
+            const optsDiv = document.getElementById('ar-options');
+            optsDiv.innerHTML = '';
+            shuffle([...q.opts]).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    handleAnswer(btn, opt === q.ans, () => {
+                        arIdx++;
+                        loadArabic();
+                    });
+                };
+                optsDiv.appendChild(btn);
+            });
+        }
+
+        function loadEnglish() {
+            if (enIdx >= 20) {
+                document.getElementById('en-question').parentNode.innerHTML = `<div class="completed-box">✅ Finished English!</div>`;
+                return;
+            }
+            const q = englishQuestions[enIdx];
+            document.getElementById('en-progress').innerText = `Question ${enIdx + 1} of 20`;
+            document.getElementById('en-question').innerText = q.q;
+
+            const optsDiv = document.getElementById('en-options');
+            optsDiv.innerHTML = '';
+            shuffle([...q.opts]).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    handleAnswer(btn, opt === q.ans, () => {
+                        enIdx++;
+                        loadEnglish();
+                    });
+                };
+                optsDiv.appendChild(btn);
+            });
+        }
+
+        function loadMath() {
+            if (mathIdx >= 20) {
+                document.getElementById('math-question').parentNode.innerHTML = `<div class="completed-box">✅ Finished Math!</div>`;
+                return;
+            }
+            const q = mathQuestions[mathIdx];
+            document.getElementById('math-progress').innerText = `Question ${mathIdx + 1} of 20`;
+            document.getElementById('math-question').innerText = q.q;
+
+            const optsDiv = document.getElementById('math-options');
+            optsDiv.innerHTML = '';
+            shuffle([...q.opts]).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    handleAnswer(btn, opt === q.ans, () => {
+                        mathIdx++;
+                        loadMath();
+                    });
+                };
+                optsDiv.appendChild(btn);
+            });
+        }
+
+        function playAudio(type) {
+            window.speechSynthesis.cancel();
+            let text = "", lang = "en-US";
+            if (type === 'ar') { text = arabicQuestions[arIdx].q; lang = 'ar-SA'; }
+            else if (type === 'en') { text = englishQuestions[enIdx].q; lang = 'ar-SA'; }
+            else if (type === 'math') { text = mathQuestions[mathIdx].q; lang = 'en-US'; }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        loadArabic();
+        loadEnglish();
+        loadMath();
+    </script>
+</body>
+</html>

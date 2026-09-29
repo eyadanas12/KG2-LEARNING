@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة صائد الحروف | KG2 Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fredoka', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #1e1b4b, #0f172a);
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 450px;
+            height: 85vh;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 15px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+        }
+
+        .score-box {
+            font-size: 16px;
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .audio-listen-btn {
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.1s;
+        }
+
+        .audio-listen-btn:active {
+            transform: scale(0.95);
+        }
+
+        .game-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .falling-letter {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(245, 158, 11, 0.4);
+            transition: transform 0.1s;
+        }
+
+        .falling-letter:active {
+            transform: scale(0.9);
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .back-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="header-bar">
+            <div class="score-box">🏆 النقاط: <span id="score">0</span></div>
+            <button class="audio-listen-btn" onclick="speakTarget()">🔊 إعادة الاستماع للصوت</button>
+        </div>
+
+        <div class="game-area" id="game-area"></div>
+
+        <button class="start-btn" id="start-btn" onclick="startGame()">▶️ ابدأ اللعبة</button>
+        <a href="index.html" class="back-btn">← العودة للرئيسية</a>
+    </div>
+
+    <script>
+        const letters = ['ba', 'co', 'fe', 'go', 'ha', 'ma', 'pa', 'ra', 'ta', 'za', 'sh', 'ch', 'bi', 'fi', 'pi', 'ru', 'su', 'du'];
+        let currentTarget = '';
+        let score = 0;
+        let gameInterval = null;
+        let isPlaying = false;
+
+        function speakTarget() {
+            if (!currentTarget) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(currentTarget);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.75;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function startGame() {
+            if (isPlaying) return;
+            isPlaying = true;
+            score = 0;
+            document.getElementById('score').innerText = score;
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('game-area').innerHTML = '';
+            
+            nextRound();
+            gameInterval = setInterval(spawnLetter, 1200);
+        }
+
+        function nextRound() {
+            currentTarget = letters[Math.floor(Math.random() * letters.length)];
+            speakTarget();
+        }
+
+        function spawnLetter() {
+            if (!isPlaying) return;
+
+            const area = document.getElementById('game-area');
+            const letterElem = document.createElement('div');
+            
+            const isTarget = Math.random() < 0.4;
+            const letterText = isTarget ? currentTarget : letters[Math.floor(Math.random() * letters.length)];
+
+            letterElem.className = 'falling-letter';
+            letterElem.innerText = letterText;
+            
+            const maxX = area.clientWidth - 70;
+            const randomX = Math.floor(Math.random() * maxX);
+            letterElem.style.left = randomX + 'px';
+            letterElem.style.top = '0px';
+
+            letterElem.onclick = function() {
+                if (letterText === currentTarget) {
+                    score += 10;
+                    document.getElementById('score').innerText = score;
+                    if (letterElem.parentElement) area.removeChild(letterElem);
+                    nextRound();
+                } else {
+                    letterElem.style.background = '#ef4444';
+                    setTimeout(() => { if (letterElem.parentElement) area.removeChild(letterElem); }, 150);
+                }
+            };
+
+            area.appendChild(letterElem);
+
+            let top = 0;
+            const fallSpeed = 2 + Math.random() * 2;
+            const anim = setInterval(() => {
+                if (!isPlaying || !letterElem.parentElement) {
+                    clearInterval(anim);
+                    return;
+                }
+                top += fallSpeed;
+                letterElem.style.top = top + 'px';
+
+                if (top > area.clientHeight - 60) {
+                    clearInterval(anim);
+                    if (letterElem.parentElement) area.removeChild(letterElem);
+                }
+            }, 20);
+        }
+    </script>
+</body>
+</html>

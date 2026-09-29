@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap to Learn | KG2 Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #f8fafc;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-bar {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background-color: #ef4444;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #2563eb;
+            font-weight: 800;
+        }
+
+        .category-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 550px) {
+            .category-tabs {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        .tab-btn {
+            padding: 10px 5px;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #e2e8f0;
+            color: #475569;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .section {
+            width: 100%;
+            max-width: 700px;
+            display: none;
+        }
+
+        .section.active {
+            display: grid;
+        }
+
+        .grid-cards {
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+        }
+
+        .grid-numbers {
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 10px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+
+        .card:active {
+            transform: scale(0.92);
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+
+        .card-main {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .card-sub {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            font-size: 24px;
+            margin-top: 2px;
+        }
+
+        .blends-card {
+            background: #fefce8;
+            border-color: #fef08a;
+        }
+
+        .blends-card .card-main {
+            color: #d97706;
+        }
+
+        .ar-blends-card {
+            background: #fdf2f8;
+            border-color: #fbcfe8;
+        }
+
+        .ar-blends-card .card-main {
+            color: #db2777;
+        }
+
+        .num-card {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .num-card .card-main {
+            color: #16a34a;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <a href="index.html" class="back-btn">رجوع ↩</a>
+        <h1>👆 Tap to Learn</h1>
+    </div>
+
+    <div class="category-tabs">
+        <button class="tab-btn active" onclick="switchTab('arabic', this)">حروف عربي</button>
+        <button class="tab-btn" onclick="switchTab('ar-blends', this)">مقاطع عربية 🔥</button>
+        <button class="tab-btn" onclick="switchTab('english', this)">English A-Z</button>
+        <button class="tab-btn" onclick="switchTab('blends', this)">English Blends</button>
+        <button class="tab-btn" onclick="switchTab('math', this)">الماث (1-100)</button>
+    </div>
+
+    <div id="arabic" class="section grid-cards active"></div>
+    <div id="ar-blends" class="section grid-cards"></div>
+    <div id="english" class="section grid-cards"></div>
+    <div id="blends" class="section grid-cards"></div>
+    <div id="math" class="section grid-numbers"></div>
+
+    <script>
+        const arabicData = [
+            { main: "أ", sub: "أسد الشجاع", icon: "🦁" },
+            { main: "ب", sub: "بطة مرحة", icon: "🦆" },
+            { main: "ت", sub: "تفاحة لذيذة", icon: "🍎" },
+            { main: "ث", sub: "ثعلب ماكر", icon: "🦊" },
+            { main: "ج", sub: "جمل الصهيد", icon: "🐪" },
+            { main: "ح", sub: "حصان سريع", icon: "🐴" },
+            { main: "خ", sub: "خروف لطيف", icon: "🐑" },
+            { main: "د", sub: "دب قوي", icon: "🐻" },
+            { main: "ذ", sub: "ذرة حلوة", icon: "🌽" },
+            { main: "ر", sub: "رجل آلي خارق", icon: "🤖" },
+            { main: "ز", sub: "زرافة طويلة", icon: "🦒" },
+            { main: "س", sub: "سمكة ملونة", icon: "🐟" },
+            { main: "ش", sub: "شمس ساطعة", icon: "☀️" },
+            { main: "ص", sub: "صقر جارح", icon: "🦅" },
+            { main: "ض", sub: "ضفدع يقفز", icon: "🐸" },
+            { main: "ط", sub: "طائرة نفاثة", icon: "✈️" },
+            { main: "ظ", sub: "ظرف رسالة", icon: "✉️" },
+            { main: "ع", sub: "عصفور مغرد", icon: "🐦" },
+            { main: "غ", sub: "غزالة سريعة", icon: "🦌" },
+            { main: "ف", sub: "فيل ضخم", icon: "🐘" },
+            { main: "ق", sub: "قمر منير", icon: "🌙" },
+            { main: "ك", sub: "كرة القدم", icon: "⚽" },
+            { main: "ل", sub: "ليمون حامض", icon: "🍋" },
+            { main: "م", sub: "موز حلو", icon: "🍌" },
+            { main: "ن", sub: "نجمة مضيئة", icon: "⭐" },
+            { main: "هـ", sub: "هدية مفاجأة", icon: "🎁" },
+            { main: "و", sub: "وردة جميلة", icon: "🌹" },
+            { main: "ي", sub: "يد قوية", icon: "✋" }
+        ];
+
+        const arBlendsData = [
+            { main: "صَا", sub: "صاروخ الفضاء", icon: "🚀" },
+            { main: "تَـمـ", sub: "تمساح النيل", icon: "🐊" },
+            { main: "بَـطَـ", sub: "بطل الخارق", icon: "🦸" },
+            { main: "تِـنـ", sub: "تنين النار", icon: "🐉" },
+            { main: "نَـجـ", sub: "نجم السماء", icon: "🌟" },
+            { main: "كـَنْـ", sub: "كنز الذهب", icon: "💎" },
+            { main: "بـُرْ", sub: "بركان ثائر", icon: "🌋" },
+            { main: "قـَرَ", sub: "قرش البحار", icon: "🦈" },
+            { main: "شـَرَ", sub: "شرارة نارية", icon: "🔥" },
+            { main: "دَ يْـ", sub: "ديناصور العملاق", icon: "🦕" },
+            { main: "سـَا", sub: "ساحر عجيب", icon: "🧙" },
+            { main: "طـَا", sub: "طائرة سريعة", icon: "✈️" }
+        ];
+
+        const englishData = [
+            { main: "Aa", sub: "Apple", icon: "🍎" },
+            { main: "Bb", sub: "Ball", icon: "⚽" },
+            { main: "Cc", sub: "Cat", icon: "🐱" },
+            { main: "Dd", sub: "Dog", icon: "🐶" },
+            { main: "Ee", sub: "Elephant", icon: "🐘" },
+            { main: "Ff", sub: "Fish", icon: "🐟" },
+            { main: "Gg", sub: "Giraffe", icon: "🦒" },
+            { main: "Hh", sub: "Hat", icon: "🎩" },
+            { main: "Ii", sub: "Ice cream", icon: "🍦" },
+            { main: "Jj", sub: "Juice", icon: "🧃" },
+            { main: "Kk", sub: "Kite", icon: "🪁" },
+            { main: "Ll", sub: "Lion", icon: "🦁" },
+            { main: "Mm", sub: "Monkey", icon: "🐵" },
+            { main: "Nn", sub: "Nest", icon: "🪹" },
+            { main: "Oo", sub: "Orange", icon: "🍊" },
+            { main: "Pp", sub: "Pen", icon: "🖊️" },
+            { main: "Qq", sub: "Queen", icon: "👑" },
+            { main: "Rr", sub: "Rabbit", icon: "🐰" },
+            { main: "Ss", sub: "Sun", icon: "☀️" },
+            { main: "Tt", sub: "Tree", icon: "🌳" },
+            { main: "Uu", sub: "Umbrella", icon: "☂️" },
+            { main: "Vv", sub: "Van", icon: "🚐" },
+            { main: "Ww", sub: "Water", icon: "💧" },
+            { main: "Xx", sub: "Xylophone", icon: "🎼" },
+            { main: "Yy", sub: "Yo-yo", icon: "🪀" },
+            { main: "Zz", sub: "Zebra", icon: "🦓" }
+        ];
+
+        const blendsData = [
+            { main: "dr", sound: "der", sub: "Drum", icon: "🥁" },
+            { main: "st", sound: "set", sub: "Street", icon: "🛣️" },
+            { main: "co", sound: "co", sub: "Cow", icon: "🐮" },
+            { main: "fo", sound: "fo", sub: "Fox", icon: "🦊" },
+            { main: "ho", sound: "ho", sub: "Horse", icon: "🐴" },
+            { main: "do", sound: "do", sub: "Doll", icon: "🪆" },
+            { main: "ch", sound: "ch", sub: "Chair", icon: "🪑" },
+            { main: "sh", sound: "sh", sub: "Ship", icon: "🚢" },
+            { main: "th", sound: "th", sub: "Three", icon: "3️⃣" },
+            { main: "ph", sound: "ph", sub: "Phone", icon: "📱" },
+            { main: "wh", sound: "wh", sub: "Whale", icon: "🐳" }
+        ];
+
+        function speak(text, lang = 'ar-SA') {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        const arabicSec = document.getElementById('arabic');
+        arabicData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<div class="card-main">${item.main}</div><div class="card-icon">${item.icon}</div><div class="card-sub">${item.sub}</div>`;
+            card.onclick = () => speak(`${item.main} .. ${item.sub}`, 'ar-SA');
+            arabicSec.appendChild(card);
+        });
+
+        const arBlendsSec = document.getElementById('ar-blends');
+        arBlendsData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card ar-blends-card';
+            card.innerHTML = `<div class="card-main">${item.main}</div><div class="card-icon">${item.icon}</div><div class="card-sub">${item.sub}</div>`;
+            card.onclick = () => speak(`${item.main} .. ${item.sub}`, 'ar-SA');
+            arBlendsSec.appendChild(card);
+        });
+
+        const englishSec = document.getElementById('english');
+        englishData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<div class="card-main">${item.main}</div><div class="card-icon">${item.icon}</div><div class="card-sub">${item.sub}</div>`;
+            card.onclick = () => speak(`${item.main.charAt(0)} .. ${item.sub}`, 'en-US');
+            englishSec.appendChild(card);
+        });
+
+        const blendsSec = document.getElementById('blends');
+        blendsData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card blends-card';
+            card.innerHTML = `<div class="card-main">${item.main}</div><div class="card-icon">${item.icon}</div><div class="card-sub">${item.sub}</div>`;
+            card.onclick = () => speak(`${item.sound} .. ${item.sub}`, 'en-US');
+            blendsSec.appendChild(card);
+        });
+
+        const mathSec = document.getElementById('math');
+        for (let i = 1; i <= 100; i++) {
+            const card = document.createElement('div');
+            card.className = 'card num-card';
+            card.innerHTML = `<div class="card-main">${i}</div>`;
+            card.onclick = () => speak(i.toString(), 'en-US');
+            mathSec.appendChild(card);
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>

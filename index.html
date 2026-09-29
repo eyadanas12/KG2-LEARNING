@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KG2 Learning - الرئيسية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .main-container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px 20px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 2px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #2563eb;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* نافذة تسجيل الدخول */
+        .login-box {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            border: 2px dashed #cbd5e1;
+            text-align: right;
+        }
+
+        .login-box h3 {
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: #475569;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 2px solid #cbd5e1;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #2563eb;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #1d4ed8;
+        }
+
+        .user-welcome {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-logout {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 18px 20px;
+            border-radius: 18px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: bold;
+            font-size: 18px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-2px);
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+
+        .card-icon {
+            font-size: 26px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-learn { border-right: 6px solid #3b82f6; }
+        .btn-quiz { border-right: 6px solid #10b981; }
+        .btn-game { border-right: 6px solid #f59e0b; }
+
+        footer {
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="logo">🎓</div>
+        <h1>KG2 Learning</h1>
+        <p class="subtitle">تطبيق التعليم التفاعلي للأطفال</p>
+
+        <!-- نموذج دخول المستخدم الجديد -->
+        <div id="loginSection" class="login-box">
+            <h3>📝 تسجيل طالب جديد</h3>
+            <form id="studentForm" onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label>اسم الطالب:</label>
+                    <input type="text" id="studentName" placeholder="أدخل اسم الطالب" required>
+                </div>
+                <div class="input-group">
+                    <label>البريد الإلكتروني (ولائي الأمر):</label>
+                    <input type="email" id="studentEmail" placeholder="example@mail.com" required>
+                </div>
+                <button type="submit" class="btn-submit">تسجيل وبدء التعلم 🚀</button>
+            </form>
+        </div>
+
+        <!-- الترحيب بالمستخدم بعد التسجيل -->
+        <div id="welcomeSection" class="user-welcome hidden">
+            <span>مرحباً بك يا <b id="displayName"></b> 👋</span>
+            <button onclick="resetUser()" class="btn-logout">تغيير الحساب</button>
+        </div>
+
+        <!-- قائمة التنقل بين الصفحات الثلاث -->
+        <div class="menu-grid">
+            <a href="tap-to-learn.html" class="menu-card btn-learn">
+                <div class="card-title">
+                    <span class="card-icon">👆</span>
+                    <span>اضغط ولتعلم (Tap to Learn)</span>
+                </div>
+                <span>➔</span>
+            </a>
+
+            <a href="questions.html" class="menu-card btn-quiz">
+                <div class="card-title">
+                    <span class="card-icon">🎯</span>
+                    <span>اختبار المواد الثلاث (Quiz)</span>
+                </div>
+                <span>➔</span>
+            </a>
+
+            <a href="game.html" class="menu-card btn-game">
+                <div class="card-title">
+                    <span class="card-icon">🎮</span>
+                    <span>الألعاب التفاعلية (Games)</span>
+                </div>
+                <span>➔</span>
+            </a>
+        </div>
+
+        <footer>KG2 Educational Platform</footer>
+    </div>
+
+    <script>
+        // التحقق من وجود مستخدم مسجل مسبقاً
+        window.onload = function() {
+            const savedName = localStorage.getItem('kg2_student_name');
+            if (savedName) {
+                showWelcome(savedName);
+            }
+        };
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('studentName').value;
+            const email = document.getElementById('studentEmail').value;
+
+            if (name && email) {
+                // 1. حفظ البيانات في الجهاز
+                localStorage.setItem('kg2_student_name', name);
+                localStorage.setItem('kg2_student_email', email);
+
+                // 2. إرسال البريد الإلكتروني والمعلومات إلى هاتفك عبر Formspree
+                fetch("https://formspree.io/f/xdekylgj", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        student_name: name,
+                        student_email: email,
+                        registered_at: new Date().toLocaleString('ar-EG')
+                    })
+                }).catch(err => console.log("خطأ في الإرسال:", err));
+
+                showWelcome(name);
+            }
+        }
+
+        function showWelcome(name) {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('welcomeSection').classList.remove('hidden');
+            document.getElementById('displayName').innerText = name;
+        }
+
+        function resetUser() {
+            localStorage.removeItem('kg2_student_name');
+            localStorage.removeItem('kg2_student_email');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('welcomeSection').classList.add('hidden');
+            document.getElementById('studentForm').reset();
+        }
+    </script>
+</body>
+</html>
